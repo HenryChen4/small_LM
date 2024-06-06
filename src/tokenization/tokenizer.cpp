@@ -11,24 +11,25 @@
 
 using namespace std;
 
-map<string, vector<string> > init_vocabulary(string corpus_path);
-map<pair<string, string>, int> count_pairs(map<string, vector<string> > split_chars);
-map<string, int> create_vocabulary(map<pair<string, string>, int>& pair_freq, map<string, vector<string> >& split_chars, int num_tokens);
-pair<pair<string, string>, int> get_most_freq_pair(map<pair<string, string>, int> pair_freq);
-string merge(map<pair<string, string>, int>& pair_freq, map<string, vector<string> >& split_chars);
-void to_json(string output_file, map<string, int> vocabulary);
+// function definitions
+map<string, vector<string> > init_vocabulary(string corpus_path); // split words from corpus into characters
+map<pair<string, string>, int> count_pairs(map<string, vector<string> > split_chars); // count adjacent pairs for each word in corpus
+map<string, int> create_vocabulary(map<pair<string, string>, int>& pair_freq, map<string, vector<string> >& split_chars, int num_tokens); // create token mapping
+pair<pair<string, string>, int> get_most_freq_pair(map<pair<string, string>, int> pair_freq); // get most frequently appearing adjacent pair
+string merge(map<pair<string, string>, int>& pair_freq, map<string, vector<string> >& split_chars); // merge adjacent pairs
+void to_json(string output_file, map<string, int> vocabulary); // dump final vocabulary into json file
 
-// debugging functions
+// debugging function definitions
 void print_split_chars(map<string, vector<string> >& split_chars);
 void print_pair_freq(map<pair<string, string>, int>& pair_freq);
 
 int main()
 {
-    map<string, vector<string> > split_chars = init_vocabulary("corpus.txt");
+    map<string, vector<string> > split_chars = init_vocabulary("../../data/corpus.txt");
     map<pair<string, string>, int> pair_freq = count_pairs(split_chars);
-    map<string, int> vocabulary = create_vocabulary(pair_freq, split_chars, 50000);
+    map<string, int> vocabulary = create_vocabulary(pair_freq, split_chars, 20000);
 
-    to_json("tokenized.json", vocabulary);
+    to_json("../../data/tokenized.json", vocabulary);
 }
 
 map<string, vector<string> > init_vocabulary(string corpus_path)
@@ -100,7 +101,6 @@ map<string, int> create_vocabulary(map<pair<string, string>, int>& pair_freq, ma
 
     // merge iteratively
     num_tokens -= token_idx;
-
     for(int i = 0; i < num_tokens; i++){
         cout << i << "/" << num_tokens << "completed!" << endl;
         string new_vocab_word = merge(pair_freq, split_chars);
