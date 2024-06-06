@@ -1,0 +1,4 @@
+all: tokenizer
+
+tokenizer: tokenizer.cpp
+	g++ -g -Wall -std=c++11 -Wextra tokenizer.cpp -o tokenizer
